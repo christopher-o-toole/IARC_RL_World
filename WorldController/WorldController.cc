@@ -44,7 +44,8 @@ namespace gazebo
     string out_of_bounds_topic_name;
     string reset_topic_name;
     transport::NodePtr message_node;
-    transport::SubscriberPtr subscriber;
+    transport::NodePtr out_of_bounds_message_node;
+    transport::SubscriberPtr out_of_bounds_subscriber;
     transport::SubscriberPtr reset_complete_subscriber;
     transport::PublisherPtr publisher;
     msgs::GzString msg;
@@ -65,11 +66,11 @@ namespace gazebo
       this->world = world;
       this->message_node = transport::NodePtr(new transport::Node());
       this->message_node->Init(world->Name());
-      this->subscriber = this->message_node->Subscribe(this->out_of_bounds_topic_name, &WorldController::OutOfBoundsEvent, this);
+      this->out_of_bounds_subscriber = this->message_node->Subscribe(this->out_of_bounds_topic_name, &WorldController::OutOfBoundsEvent, this);
       this->reset_complete_subscriber = this->message_node->Subscribe(RESET_COMPLETE_EVENT_TOPIC_NAME, &WorldController::ResetCompleteEvent, this);
       this->publisher = this->message_node->Advertise<gazebo::msgs::GzString>(this->reset_topic_name);
       
-      printf("WorldController plugin is now loaded!");
+      printf("WorldController plugin is now loaded!\n");
     }
 
     void ResetCompleteEvent(ConstGzStringPtr &msg)

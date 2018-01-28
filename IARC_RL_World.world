@@ -69,36 +69,40 @@
         </link>
     </model>
 
-    <!-- <plugin filename="libSimEventsPlugin.so" name="out_of_bounds_event">
+    <plugin filename="libSimEventsPlugin.so" name="out_of_bounds_event">
         <region>
           <name>left_boundary</name>
           <volume>
-            <min>2.5 -2.5 0</min>
-            <max>-2.5 -3 10</max>
+            <min>-10 -12 0</min>
+            <max>-12 12 1000</max>
           </volume>
         </region>
 
         <region>
           <name>right_boundary</name>
           <volume>
-            <min>2.5 2.5 0</min>
-            <max>-2.5 3 10</max>
+            <min>10 -12 0</min>
+            <max>12 12 1000</max>
           </volume>
         </region>
+
+        <!-- red line -->
 
         <region>
           <name>back_boundary</name>
           <volume>
-            <min>2.5 -3 0</min>
-            <max>3 3 10</max>
+            <min>-10 -10 0</min>
+            <max>10 -12 1000</max>
           </volume>
         </region>
 
+        <!-- green line -->
+        
         <region>
           <name>front_boundary</name>
           <volume>
-            <min>-2.5 -3 0</min>
-            <max>-3 3 10</max>
+            <min>-10 10 0</min>
+            <max>10 12 1000</max>
           </volume>
         </region>
 
@@ -141,7 +145,7 @@
           <topic>~/out_of_bounds</topic>
           <msg_data>0</msg_data>
         </event>
-    </plugin> -->
+    </plugin>
 
    <model name='create1'>
       <link name='base'>
