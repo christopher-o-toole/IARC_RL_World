@@ -2,6 +2,10 @@
 <sdf version="1.6">
   <world name="default">
     <plugin name="WorldController" filename="libWorldController.so"/>
+
+    <gui>
+      <plugin name="sample" filename="libgui_example_time_widget.so"/>
+    </gui>
     
     <light name='sun' type='directional'>
       <pose frame=''>0 0 9 0 -0 0</pose>
@@ -956,7 +960,7 @@
       </ode>
       <max_step_size>0.001</max_step_size>
       <real_time_factor>1</real_time_factor>
-      <real_time_update_rate>1000</real_time_update_rate>
+      <real_time_update_rate>0</real_time_update_rate>
     </physics>
 
     <scene>
