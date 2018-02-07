@@ -15,6 +15,10 @@
  *
 */
 #include <sstream>
+#include <algorithm>
+#include <string>
+using namespace std;
+
 #include <gazebo/msgs/msgs.hh>
 #include "GUIExampleTimeWidget.hh"
 
@@ -22,8 +26,13 @@ using namespace gazebo;
 
 // # of seconds per minute
 #define NUM_SECONDS_PER_MINUTE 60
+// # of minutes per round
+#define MINUTES_PER_ROUND 2
 // round time in seconds
-#define ROUND_TIME 10*NUM_SECONDS_PER_MINUTE
+#define ROUND_TIME MINUTES_PER_ROUND*NUM_SECONDS_PER_MINUTE
+
+const string TIMEOUT_EVENT_NAME = "~/timeout";
+const string RESET_COMPLETE_EVENT_TOPIC_NAME = "~/reset_complete";
 
 // Register this plugin with the simulator
 GZ_REGISTER_GUI_PLUGIN(GUIExampleTimeWidget)
@@ -32,6 +41,11 @@ GZ_REGISTER_GUI_PLUGIN(GUIExampleTimeWidget)
 GUIExampleTimeWidget::GUIExampleTimeWidget()
   : GUIPlugin()
 {
+  this->timeout_topic_name = TIMEOUT_EVENT_NAME;
+  this->msg.set_data(TIMEOUT_EVENT_NAME);
+  this->timer_offset = 0;
+  this->reset_flag = false;
+        
   // Set the frame background and foreground colors
   this->setStyleSheet(
       "QFrame { background-color : rgba(100, 100, 100, 255); color : white; }");
@@ -48,7 +62,7 @@ GUIExampleTimeWidget::GUIExampleTimeWidget()
   QLabel *label = new QLabel(tr("Round Time Remaining:"));
 
   // Create a time label
-  QLabel *timeLabel = new QLabel(tr("10:00.00"));
+  QLabel *timeLabel = new QLabel(tr("00:00"));
 
   // Add the label to the frame's layout
   frameLayout->addWidget(label);
@@ -70,13 +84,25 @@ GUIExampleTimeWidget::GUIExampleTimeWidget()
 
   // Position and resize this widget
   this->move(10, 10);
-  this->resize(250, 30);
+  this->resize(225, 30);
 
   // Create a node for transportation
   this->node = transport::NodePtr(new transport::Node());
   this->node->Init("default");
   this->statsSub = this->node->Subscribe("~/world_stats",
       &GUIExampleTimeWidget::OnStats, this);
+  this->timeout_publisher = this->node->Advertise<gazebo::msgs::GzString>(this->timeout_topic_name);
+  this->reset_complete_subscriber = this->node->Subscribe(RESET_COMPLETE_EVENT_TOPIC_NAME, &GUIExampleTimeWidget::ResetCompleteEvent, this);
+}
+
+void GUIExampleTimeWidget::ResetCompleteEvent(ConstGzStringPtr &msg)
+{
+  if (this->reset_flag)
+  {
+    lock_guard<mutex> lock(this->timer_update_mutex);
+    this->timer_offset = this->seconds_passed;
+    this->reset_flag = false;
+  }
 }
 
 /////////////////////////////////////////////////
@@ -92,26 +118,27 @@ void GUIExampleTimeWidget::OnStats(ConstWorldStatisticsPtr &_msg)
 }
 
 /////////////////////////////////////////////////
-std::string GUIExampleTimeWidget::FormatTime(const msgs::Time &_msg) const
+std::string GUIExampleTimeWidget::FormatTime(const msgs::Time &_msg)
 {
+  lock_guard<mutex> lock(this->timer_update_mutex);
+  this->seconds_passed = _msg.sec();
+
   std::ostringstream stream;
-  unsigned int day, hour, min, sec, msec;
+  int day, hour, min, sec, msec;
 
   stream.str("");
 
-  sec = ROUND_TIME - _msg.sec();
+  int delta = ROUND_TIME + this->timer_offset - _msg.sec();
+  sec = std::max(0, delta);
 
-  hour = sec / 3600;
-  sec -= hour * 3600;
+  if (delta <= 0 && !this->reset_flag)
+  {
+    this->timeout_publisher->Publish(this->msg);
+    this->reset_flag = true;
+  }
 
-  min = sec / 60;
-  sec -= min * 60;
-
-  msec = rint(_msg.nsec() * 1e-6);
-
-  stream << std::setw(2) << std::setfill('0') << min << ":";
-  stream << std::setw(2) << std::setfill('0') << sec << ".";
-  stream << std::setw(3) << std::setfill('0') << msec;
+  stream << std::setw(2) << std::setfill('0') << (sec/60) << ":";
+  stream << std::setw(2) << std::setfill('0') << (sec % 60);
 
   return stream.str();
 }

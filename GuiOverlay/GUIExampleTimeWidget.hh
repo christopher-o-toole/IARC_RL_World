@@ -18,6 +18,7 @@
 #define _GUI_EXAMPLE_TIME_WIDGET_HH_
 
 #include <string>
+#include <mutex>
 
 #include <gazebo/common/Plugin.hh>
 #include <gazebo/gui/GuiPlugin.hh>
@@ -46,16 +47,44 @@ namespace gazebo
     /// \param[in] _msg World statistics message that is received.
     protected: void OnStats(ConstWorldStatisticsPtr &_msg);
 
+    /// \brief Callback that receives world reset complete messages.
+    /// \param[in] msg Reset complete message that is received.
+    protected: void ResetCompleteEvent(ConstGzStringPtr &msg);
+    
     /// \brief Helper function to format time string.
     /// \param[in] _msg Time message.
     /// \return Time formatted as a string.
-    private: std::string FormatTime(const msgs::Time &_msg) const;
+    private: std::string FormatTime(const msgs::Time &_msg);
 
     /// \brief Node used to establish communication with gzserver.
     private: transport::NodePtr node;
 
     /// \brief Subscriber to world statistics messages.
     private: transport::SubscriberPtr statsSub;
+
+    /// \brief Topic name for the timeout event
+    private: std::string timeout_topic_name;
+
+    /// \brief Publisher for the timeout event
+    private: transport::PublisherPtr timeout_publisher;
+
+    /// \brief Message for the timeout event
+    private: msgs::GzString msg;
+
+    /// \brief Subscriber for the reset complete event
+    private: transport::SubscriberPtr reset_complete_subscriber;
+
+    /// \brief Timer offset
+    private: unsigned int timer_offset;
+
+    /// \brief Number of seconds passed in simulator
+    private: unsigned int seconds_passed;
+
+    /// \brief Timer update mutex
+    private: std::mutex timer_update_mutex;
+
+    /// \brief Have we already sent a timeout message?
+    private: bool reset_flag;
   };
 }
 

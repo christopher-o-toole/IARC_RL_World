@@ -3,6 +3,8 @@
 #include <mutex>
 #include <string>
 #include <cstdlib>
+#include <chrono>
+#include <thread>
 
 #include <sdf/sdf.hh>
 #include <ignition/transport/Node.hh>
@@ -36,6 +38,8 @@ const string DRONE_NAME = "Sentinel";
 const string RESET_EVENT_VALUE = "1";
 const double MAX_DIST = 10;
 
+const string TIMEOUT_EVENT_NAME = "~/timeout";
+
 namespace gazebo
 {
   class WorldController : public WorldPlugin
@@ -47,6 +51,7 @@ namespace gazebo
     transport::NodePtr out_of_bounds_message_node;
     transport::SubscriberPtr out_of_bounds_subscriber;
     transport::SubscriberPtr reset_complete_subscriber;
+    transport::SubscriberPtr timeout_subscriber;
     transport::PublisherPtr publisher;
     msgs::GzString msg;
     mutex world_update_mutex;
@@ -68,6 +73,7 @@ namespace gazebo
       this->message_node->Init(world->Name());
       this->out_of_bounds_subscriber = this->message_node->Subscribe(this->out_of_bounds_topic_name, &WorldController::OutOfBoundsEvent, this);
       this->reset_complete_subscriber = this->message_node->Subscribe(RESET_COMPLETE_EVENT_TOPIC_NAME, &WorldController::ResetCompleteEvent, this);
+      this->timeout_subscriber = this->message_node->Subscribe(TIMEOUT_EVENT_NAME, &WorldController::TimeoutEvent, this);
       this->publisher = this->message_node->Advertise<gazebo::msgs::GzString>(this->reset_topic_name);
       
       printf("WorldController plugin is now loaded!\n");
@@ -82,7 +88,24 @@ namespace gazebo
         //TODO: reset stats here
         this->world->ResetPhysicsStates();
         this->world->ResetEntities(physics::Base::EntityType::ENTITY);
+
+        const auto& drone = this->world->GetModel(DRONE_NAME);
+
+        while (abs(drone->WorldPose().Pos().X()) >= MAX_DIST || abs(drone->WorldPose().Pos().Y()) >= MAX_DIST)
+          this_thread::sleep_for(std::chrono::milliseconds(1000));
+
         this->reset_flag = false;
+      }
+    }
+
+    void TimeoutEvent(ConstGzStringPtr &msg)
+    {
+      if (!this->reset_flag)
+      {
+        lock_guard<mutex> lock(this->world_update_mutex);
+        this->publisher->Publish(this->msg);
+        this->reset_flag = true;
+        gzwarn << "Time's up! Attempting to reset the world...\n";
       }
     }
 

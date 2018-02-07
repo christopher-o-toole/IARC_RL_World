@@ -115,7 +115,7 @@
           <type>occupied</type>
           <region>left_boundary</region>
           <topic>~/out_of_bounds</topic>
-          <msg_data>0</msg_data>
+          <msg_data>left</msg_data>
         </event>
 
         <event>
@@ -123,7 +123,7 @@
           <type>occupied</type>
           <region>right_boundary</region>
           <topic>~/out_of_bounds</topic>
-          <msg_data>0</msg_data>
+          <msg_data>right</msg_data>
         </event>
 
         <event>
@@ -131,7 +131,7 @@
           <type>occupied</type>
           <region>back_boundary</region>
           <topic>~/out_of_bounds</topic>
-          <msg_data>0</msg_data>
+          <msg_data>back</msg_data>
         </event>
 
         <event>
@@ -139,7 +139,7 @@
           <type>occupied</type>
           <region>front_boundary</region>
           <topic>~/out_of_bounds</topic>
-          <msg_data>0</msg_data>
+          <msg_data>front</msg_data>
         </event>
 
         <event>
