@@ -4,6 +4,7 @@
     <plugin name="WorldController" filename="libWorldController.so"/>
 
     <gui>
+      <plugin name="score" filename="libGameScoreManager.so"/>
       <plugin name="sample" filename="libgui_example_time_widget.so"/>
     </gui>
     

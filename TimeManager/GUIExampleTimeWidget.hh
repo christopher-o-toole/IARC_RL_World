@@ -65,8 +65,14 @@ namespace gazebo
     /// \brief Topic name for the timeout event
     private: std::string timeout_topic_name;
 
+    /// \brief TOpic name for the minute passed event
+    private: std::string minute_passed_topic_name;
+
     /// \brief Publisher for the timeout event
     private: transport::PublisherPtr timeout_publisher;
+
+    /// \brief Publisher for the minute passed event
+    private: transport::PublisherPtr minute_passed_publisher;
 
     /// \brief Message for the timeout event
     private: msgs::GzString msg;
@@ -85,6 +91,9 @@ namespace gazebo
 
     /// \brief Have we already sent a timeout message?
     private: bool reset_flag;
+
+    /// \brief Number of minutes passed in last iteration
+    private: long prev_minutes_passed;
   };
 }
 

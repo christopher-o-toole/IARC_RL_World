@@ -27,12 +27,13 @@ using namespace gazebo;
 // # of seconds per minute
 #define NUM_SECONDS_PER_MINUTE 60
 // # of minutes per round
-#define MINUTES_PER_ROUND 2
+#define MINUTES_PER_ROUND 10
 // round time in seconds
 #define ROUND_TIME MINUTES_PER_ROUND*NUM_SECONDS_PER_MINUTE
 
 const string TIMEOUT_EVENT_NAME = "~/timeout";
 const string RESET_COMPLETE_EVENT_TOPIC_NAME = "~/reset_complete";
+const string MINUTE_PASSED_EVENT_TOPIC_NAME = "~/minute_passed";
 
 // Register this plugin with the simulator
 GZ_REGISTER_GUI_PLUGIN(GUIExampleTimeWidget)
@@ -42,9 +43,11 @@ GUIExampleTimeWidget::GUIExampleTimeWidget()
   : GUIPlugin()
 {
   this->timeout_topic_name = TIMEOUT_EVENT_NAME;
+  this->minute_passed_topic_name = MINUTE_PASSED_EVENT_TOPIC_NAME;
   this->msg.set_data(TIMEOUT_EVENT_NAME);
   this->timer_offset = 0;
   this->reset_flag = false;
+  this->prev_minutes_passed = 0;
         
   // Set the frame background and foreground colors
   this->setStyleSheet(
@@ -62,7 +65,7 @@ GUIExampleTimeWidget::GUIExampleTimeWidget()
   QLabel *label = new QLabel(tr("Round Time Remaining:"));
 
   // Create a time label
-  QLabel *timeLabel = new QLabel(tr("00:00"));
+  QLabel *timeLabel = new QLabel(tr("10:00"));
 
   // Add the label to the frame's layout
   frameLayout->addWidget(label);
@@ -84,7 +87,7 @@ GUIExampleTimeWidget::GUIExampleTimeWidget()
 
   // Position and resize this widget
   this->move(10, 10);
-  this->resize(225, 30);
+  this->resize(215, 30);
 
   // Create a node for transportation
   this->node = transport::NodePtr(new transport::Node());
@@ -92,6 +95,7 @@ GUIExampleTimeWidget::GUIExampleTimeWidget()
   this->statsSub = this->node->Subscribe("~/world_stats",
       &GUIExampleTimeWidget::OnStats, this);
   this->timeout_publisher = this->node->Advertise<gazebo::msgs::GzString>(this->timeout_topic_name);
+  this->minute_passed_publisher = this->node->Advertise<gazebo::msgs::GzString>(this->minute_passed_topic_name);
   this->reset_complete_subscriber = this->node->Subscribe(RESET_COMPLETE_EVENT_TOPIC_NAME, &GUIExampleTimeWidget::ResetCompleteEvent, this);
 }
 
@@ -130,6 +134,12 @@ std::string GUIExampleTimeWidget::FormatTime(const msgs::Time &_msg)
 
   int delta = ROUND_TIME + this->timer_offset - _msg.sec();
   sec = std::max(0, delta);
+  min = sec/60;
+
+  if (this->prev_minutes_passed != min && min < MINUTES_PER_ROUND-1)
+  {
+    this->minute_passed_publisher->Publish(this->msg);
+  }
 
   if (delta <= 0 && !this->reset_flag)
   {
@@ -137,8 +147,10 @@ std::string GUIExampleTimeWidget::FormatTime(const msgs::Time &_msg)
     this->reset_flag = true;
   }
 
-  stream << std::setw(2) << std::setfill('0') << (sec/60) << ":";
+  stream << std::setw(2) << std::setfill('0') << min << ":";
   stream << std::setw(2) << std::setfill('0') << (sec % 60);
+  
+  this->prev_minutes_passed = min;
 
   return stream.str();
 }
