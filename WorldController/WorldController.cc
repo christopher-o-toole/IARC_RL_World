@@ -34,7 +34,9 @@ using namespace std;
 const string TOPIC_NAME = "~/out_of_bounds";
 const string RESET_EVENT_TOPIC_NAME = "~/reset";
 const string RESET_COMPLETE_EVENT_TOPIC_NAME = "~/reset_complete";
+const string ROOMBA_OUT_OF_BOUNDS_EVENT_TOPIC_NAME = "~/roomba_out_of_bounds";
 const string DRONE_NAME = "Sentinel";
+const string ROOMBA_KEYWORD = "create";
 const string RESET_EVENT_VALUE = "1";
 const double MAX_DIST = 10;
 
@@ -47,12 +49,14 @@ namespace gazebo
     physics::WorldPtr world;
     string out_of_bounds_topic_name;
     string reset_topic_name;
+    string roomba_out_of_bounds_topic_name;
     transport::NodePtr message_node;
     transport::NodePtr out_of_bounds_message_node;
     transport::SubscriberPtr out_of_bounds_subscriber;
     transport::SubscriberPtr reset_complete_subscriber;
     transport::SubscriberPtr timeout_subscriber;
     transport::PublisherPtr publisher;
+    transport::PublisherPtr roomba_out_of_bounds_publisher;
     msgs::GzString msg;
     mutex world_update_mutex;
     bool reset_flag;
@@ -62,6 +66,7 @@ namespace gazebo
     {
       this->out_of_bounds_topic_name = topic_name;
       this->reset_topic_name = reset_topic_name;
+      this->roomba_out_of_bounds_topic_name = ROOMBA_OUT_OF_BOUNDS_EVENT_TOPIC_NAME;
       this->msg.set_data(RESET_EVENT_VALUE);
       this->reset_flag = false;
     }
@@ -75,6 +80,7 @@ namespace gazebo
       this->reset_complete_subscriber = this->message_node->Subscribe(RESET_COMPLETE_EVENT_TOPIC_NAME, &WorldController::ResetCompleteEvent, this);
       this->timeout_subscriber = this->message_node->Subscribe(TIMEOUT_EVENT_NAME, &WorldController::TimeoutEvent, this);
       this->publisher = this->message_node->Advertise<gazebo::msgs::GzString>(this->reset_topic_name);
+      this->roomba_out_of_bounds_publisher = this->message_node->Advertise<gazebo::msgs::GzString>(this->roomba_out_of_bounds_topic_name);
       
       printf("WorldController plugin is now loaded!\n");
     }
@@ -124,7 +130,14 @@ namespace gazebo
             if (abs(pos.X()) >= MAX_DIST || abs(pos.Y()) >= MAX_DIST)
             {
               gzwarn << model->GetName() << " is outside of the arena boundaries!\n";
-              if (model->GetName() == DRONE_NAME)
+              
+              if (model->GetName().find(ROOMBA_KEYWORD) != string::npos)
+              {
+                msgs::GzString roomba_out_of_bounds_msg;
+                roomba_out_of_bounds_msg.set_data(msg->data()+model->GetName()[model->GetName().size()-1]);
+                this->roomba_out_of_bounds_publisher->Publish(roomba_out_of_bounds_msg);
+              }
+              else if (model->GetName() == DRONE_NAME)
               {
                 gzwarn << "Attempting to reset the world...\n";
                 this->publisher->Publish(this->msg);

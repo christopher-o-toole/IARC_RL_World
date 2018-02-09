@@ -85,7 +85,7 @@ void GameScoreManager::RoombaOutOfBounds(ConstGzStringPtr &msg)
   int score_delta = 0;
   int roomba_id = data[data.size()-1] - '0';
 
-  if (!this->has_roomba_been_scored[roomba_id])
+  if (roomba_id < NUMBER_OF_ROOMBAS && !this->has_roomba_been_scored[roomba_id])
   {
     this->has_roomba_been_scored[roomba_id] = true;
 
