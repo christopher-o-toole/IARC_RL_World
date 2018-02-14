@@ -35,6 +35,7 @@ const string TOPIC_NAME = "~/out_of_bounds";
 const string RESET_EVENT_TOPIC_NAME = "~/reset";
 const string RESET_COMPLETE_EVENT_TOPIC_NAME = "~/reset_complete";
 const string ROOMBA_OUT_OF_BOUNDS_EVENT_TOPIC_NAME = "~/roomba_out_of_bounds";
+const string CRASH_RESET_MSG_DATA = "crash";
 const string DRONE_NAME = "Sentinel";
 const string ROOMBA_KEYWORD = "create";
 const string RESET_EVENT_VALUE = "1";
@@ -87,7 +88,7 @@ namespace gazebo
 
     void ResetCompleteEvent(ConstGzStringPtr &msg)
     {
-      if (this->reset_flag)
+      if (this->reset_flag || msg->data()==CRASH_RESET_MSG_DATA)
       {
         lock_guard<mutex> lock(this->world_update_mutex);
 

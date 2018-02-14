@@ -34,6 +34,7 @@ using namespace gazebo;
 const string TIMEOUT_EVENT_NAME = "~/timeout";
 const string RESET_COMPLETE_EVENT_TOPIC_NAME = "~/reset_complete";
 const string MINUTE_PASSED_EVENT_TOPIC_NAME = "~/minute_passed";
+const string CRASH_RESET_MSG_DATA = "crash";
 
 // Register this plugin with the simulator
 GZ_REGISTER_GUI_PLUGIN(GUIExampleTimeWidget)
@@ -101,7 +102,7 @@ GUIExampleTimeWidget::GUIExampleTimeWidget()
 
 void GUIExampleTimeWidget::ResetCompleteEvent(ConstGzStringPtr &msg)
 {
-  if (this->reset_flag)
+  if (this->reset_flag || msg->data() == CRASH_RESET_MSG_DATA)
   {
     lock_guard<mutex> lock(this->timer_update_mutex);
     this->timer_offset = this->seconds_passed;
