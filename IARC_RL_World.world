@@ -905,7 +905,7 @@
           </link>
         </model>
 
-        <joint name='camera_attachment' type='revolute'>
+        <joint name='camera_attachment' type='fixed'>
           <parent>Sentinel::iris_demo::iris::base_link</parent>
           <child>realsense_camera::link</child>
           <pose frame=''>0 0 0 0 -0 0</pose>

@@ -137,6 +137,8 @@ namespace gazebo
                 msgs::GzString roomba_out_of_bounds_msg;
                 roomba_out_of_bounds_msg.set_data(msg->data()+model->GetName()[model->GetName().size()-1]);
                 this->roomba_out_of_bounds_publisher->Publish(roomba_out_of_bounds_msg);
+                model->SetStatic(true);
+                model->SetEnabled(false);
               }
               else if (model->GetName() == DRONE_NAME)
               {
