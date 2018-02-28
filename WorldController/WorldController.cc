@@ -25,8 +25,6 @@
 #include "gazebo/common/common.hh"
 #include "gazebo/gazebo.hh"
 
-#include <gazebo/math/gzmath.hh>
-
 
 using namespace gazebo;
 using namespace std;
@@ -96,7 +94,7 @@ namespace gazebo
         this->world->ResetPhysicsStates();
         this->world->ResetEntities(physics::Base::EntityType::ENTITY);
 
-        const auto& drone = this->world->GetModel(DRONE_NAME);
+        const auto& drone = this->world->ModelByName(DRONE_NAME);
 
         while (abs(drone->WorldPose().Pos().X()) >= MAX_DIST || abs(drone->WorldPose().Pos().Y()) >= MAX_DIST)
           this_thread::sleep_for(std::chrono::milliseconds(1000));
