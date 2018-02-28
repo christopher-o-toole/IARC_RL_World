@@ -104,3 +104,13 @@ Try the world out!
 cd ~/IARC_RL_World
 gazebo --verbose IARC_RL_World.world
 ```
+Setup an environment to run Gazebo in:
+```
+echo 'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:/usr/share/gazebo-9/models' >> ~/.bashrc
+echo 'export GAZEBO_PLUGIN_PATH=${GAZEBO_PLUGIN_PATH}:/usr/lib/x86_64-linux-gnu/gazebo-9/plugins' >> ~/.bashrc
+echo 'source /usr/share/gazebo-9/setup.sh' >> ~/.bashrc
+source ~/.bashrc
+```
+
+### IARC Reinforcement Learning World Installation
+
