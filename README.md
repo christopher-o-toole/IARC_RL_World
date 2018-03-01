@@ -10,10 +10,21 @@ sudo apt-get install python-pip
 pip install --upgrade pip
 sudo apt-get remove python-pip
 ```
-Install Boost for C++ version 1.66 (needed to compile the ArduPilot plugin successfully):
+Install version 1.66 of the Boost libraries for C++ (needed to compile the ArduPilot plugin successfully):
+```
+cd ~
+wget https://cfhcable.dl.sourceforge.net/project/boost/boost/1.66.0/boost_1_66_0.tar.bz2
+tar -xvjf boost_1_66_0.tar.bz2
+cd ~/boost_1_66_0
+sudo apt-get update
+sudo apt-get install build-essential g++ python-dev autotools-dev libicu-dev build-essential libbz2-dev libboost-all-dev
+./bootstrap.sh --prefix=/usr/
+./b2 -j4
+sudo ./b2 -j4 install
+sudo sh -c 'echo "/usr/lib" >> /etc/ld.so.conf.d/local.conf'
+sudo ldconfig
 ```
 
-```
 ### ArduPilot Installation
 
 Start by installing some Python dependencies for ArduPilot:
