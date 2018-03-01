@@ -58,6 +58,40 @@ source ~/.bashrc
 
 ### IARC Reinforcement Learning World Installation
 
+#### Intel RealSense for Gazebo Installation
+Clone the repo and build the RealSense plugin for Gazebo:
+```
+cd ~
+git clone https://github.com/intel/gazebo-realsense.git
+cd gazebo-realsense
+mkdir build
+cd build
+cmake ..
+make -j4
+```
+Add the Intel RealSense model and plugins to the Gazebo environment:
+```
+echo 'export GAZEBO_PLUGIN_PATH=${GAZEBO_PLUGIN_PATH}:~/gazebo-realsense/build/gzrs' >> ~/.bashrc
+echo 'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:~/gazebo-realsense/models' >> ~/.bashrc
+```
+#### ArduPilot for Gazebo Installation
+Build and install the ArduPilot plugin for Gazebo:
+'''
+cd ~
+git clone https://github.com/christopher-o-toole/ardupilot_gazebo.git
+cd ardupilot_gazebo
+mkdir build
+cd build
+cmake ..
+make -j4
+sudo make install
+'''
+Add the ArduPilot drone models to your Gazebo environment:
+'''
+echo 'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:~/ardupilot_gazebo/gazebo_models' >> ~/.bashrc
+'''
+#### Gazebo World Installation
+
 Clone the repo:
 ```
 cd ~
