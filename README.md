@@ -101,28 +101,33 @@ cd IARC_RL_World
 Compile the plugins:
 ```
 cd GameScoreManager
+rm -rf build
 mkdir build
 cd build
 cmake .. 
 make -j4
 
-cd ../Roomba
+cd ../../Roomba
+rm -rf build
 mkdir build
 cd build
 cmake .. 
 make -j4
 
-cd ../TimeManager
+cd ../../TimeManager
+rm -rf build
 mkdir build
 cd build
 cmake .. 
 make -j4
 
-cd ../WorldController
+cd ../../WorldController
+rm -rf build
 mkdir build
 cd build
 cmake .. 
 make -j4
+
 ```
 Add the world to your Gazebo environment:
 ```
