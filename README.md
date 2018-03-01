@@ -169,4 +169,4 @@ gazebo --verbose IARC_RL_World.world
 
 If all goes well, your world should look something like this:
 
-!(example)[https://github.com/christopher-o-toole/IARC_RL_World/blob/master/example.png]
+!(example)[https://raw.githubusercontent.com/christopher-o-toole/IARC_RL_World/master/example.png]
