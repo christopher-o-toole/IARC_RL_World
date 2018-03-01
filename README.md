@@ -76,7 +76,7 @@ echo 'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:~/gazebo-realsense/models' >
 ```
 #### ArduPilot for Gazebo Installation
 Build and install the ArduPilot plugin for Gazebo:
-'''
+```
 cd ~
 git clone https://github.com/christopher-o-toole/ardupilot_gazebo.git
 cd ardupilot_gazebo
@@ -85,11 +85,11 @@ cd build
 cmake ..
 make -j4
 sudo make install
-'''
+```
 Add the ArduPilot drone models to your Gazebo environment:
-'''
+```
 echo 'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:~/ardupilot_gazebo/gazebo_models' >> ~/.bashrc
-'''
+```
 #### Gazebo World Installation
 
 Clone the repo:
