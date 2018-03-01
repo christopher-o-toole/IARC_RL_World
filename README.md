@@ -3,23 +3,31 @@
 
 ### Install Dependencies
 
-Install the necessary command line utilities:
+First, install some necessary command line utilities and development libraries:
 ```
+sudo apt-get update
+sudo apt-get install build-essential g++ python-dev autotools-dev libicu-dev build-essential libbz2-dev libboost-all-dev
 sudo apt-get install curl git ccache gawk
 sudo apt-get install python-pip
 pip install --upgrade pip
 sudo apt-get remove python-pip
 ```
-Install version 1.66 of the Boost libraries for C++ (needed to compile the ArduPilot plugin successfully):
+
+#### Boost Installation
+Version 1.66 of the Boost libraries for C++ is necessary for the compilation of the ArduPilot Gazebo plugin. To start off the boost installation process, unpack the source code for Boost in your home directory:
 ```
 cd ~
 wget https://cfhcable.dl.sourceforge.net/project/boost/boost/1.66.0/boost_1_66_0.tar.bz2
 tar -xvjf boost_1_66_0.tar.bz2
 cd ~/boost_1_66_0
-sudo apt-get update
-sudo apt-get install build-essential g++ python-dev autotools-dev libicu-dev build-essential libbz2-dev libboost-all-dev
+```
+Now build the Boost libraries from source:
+```
 ./bootstrap.sh --prefix=/usr/
 ./b2 -j4
+```
+If Boost was built succcessfully, complete the installation with the following commands:
+```
 sudo ./b2 -j4 install
 sudo sh -c 'echo "/usr/lib" >> /etc/ld.so.conf.d/local.conf'
 sudo ldconfig
@@ -86,6 +94,7 @@ Add the Intel RealSense model and plugins to the Gazebo environment:
 ```
 echo 'export GAZEBO_PLUGIN_PATH=${GAZEBO_PLUGIN_PATH}:~/gazebo-realsense/build/gzrs' >> ~/.bashrc
 echo 'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:~/gazebo-realsense/models' >> ~/.bashrc
+source ~/.bashrc
 ```
 #### ArduPilot for Gazebo Installation
 Build and install the ArduPilot plugin for Gazebo:
@@ -102,6 +111,7 @@ sudo make install
 Add the ArduPilot drone models to your Gazebo environment:
 ```
 echo 'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:~/ardupilot_gazebo/gazebo_models' >> ~/.bashrc
+source ~/.bashrc
 ```
 #### Gazebo World Installation
 
@@ -142,7 +152,7 @@ cmake ..
 make -j4
 
 ```
-Add the world to your Gazebo environment:
+Add the world's assets to your Gazebo environment:
 ```
 echo 'export GAZEBO_PLUGIN_PATH=${GAZEBO_PLUGIN_PATH}:~/IARC_RL_World/WorldController/build' >> ~/.bashrc
 echo 'export GAZEBO_PLUGIN_PATH=${GAZEBO_PLUGIN_PATH}:~/IARC_RL_World/TimeManager/build' >> ~/.bashrc
