@@ -4,17 +4,19 @@
 ### Install Dependencies
 
 Install the necessary command line utilities:
-
 ```
 sudo apt-get install curl git ccache gawk
 sudo apt-get install python-pip
 pip install --upgrade pip
 sudo apt-get remove python-pip
 ```
+Install Boost for C++ version 1.66 (needed to compile the ArduPilot plugin successfully):
+```
 
+```
 ### ArduPilot Installation
 
-Start by installing some Python dependencies for Ardupilot:
+Start by installing some Python dependencies for ArduPilot:
 ```
 sudo -E env "PATH=$PATH" pip2 install -U setuptools future lxml matplotlib opencv-python scipy numpy sklearn serial pymavlink MAVProxy
 ```
