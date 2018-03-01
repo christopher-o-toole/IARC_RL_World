@@ -166,3 +166,7 @@ Try the world out!
 cd ~/IARC_RL_World
 gazebo --verbose IARC_RL_World.world
 ```
+
+If all goes well, your world should look something like this:
+
+
