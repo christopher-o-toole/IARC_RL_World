@@ -14,16 +14,16 @@ sudo apt-get remove python-pip
 ```
 
 #### Boost Installation
-Version 1.66 of the Boost libraries for C++ is necessary for the compilation of the ArduPilot Gazebo plugin. To start off the boost installation process, unpack the source code for Boost in your home directory:
+Version 1.65 of the Boost libraries for C++ is necessary for the compilation of the ArduPilot Gazebo plugin. To start off the boost installation process, unpack the source code for Boost in your home directory:
 ```
 cd ~
-wget https://cfhcable.dl.sourceforge.net/project/boost/boost/1.66.0/boost_1_66_0.tar.bz2
-tar -xvjf boost_1_66_0.tar.bz2
-cd ~/boost_1_66_0
+wget https://cfhcable.dl.sourceforge.net/project/boost/boost/1.65.0/boost_1_65_0.tar.bz2
+tar -xvjf boost_1_65_0.tar.bz2
+cd ~/boost_1_65_0
 ```
 Now build the Boost libraries from source:
 ```
-./bootstrap.sh --prefix=/usr/
+./bootstrap.sh --prefix=/usr/local
 ./b2 -j4
 ```
 If Boost was built succcessfully, complete the installation with the following commands:
