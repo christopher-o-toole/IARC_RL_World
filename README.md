@@ -29,7 +29,7 @@ Now build the Boost libraries from source:
 If Boost was built succcessfully, complete the installation with the following commands:
 ```
 sudo ./b2 -j4 install
-sudo sh -c 'echo "/usr/lib" >> /etc/ld.so.conf.d/local.conf'
+sudo sh -c 'echo "/usr/local/lib" >> /etc/ld.so.conf.d/local.conf'
 sudo ldconfig
 ```
 
