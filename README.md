@@ -6,9 +6,9 @@
 First, install some necessary command line utilities and development libraries:
 ```
 sudo apt-get update
-sudo apt-get install build-essential g++ python-dev autotools-dev libicu-dev build-essential libbz2-dev libboost-all-dev
-sudo apt-get install curl git ccache gawk
-sudo apt-get install python-pip
+sudo apt-get install -y build-essential g++ python-dev autotools-dev libicu-dev build-essential libbz2-dev libboost-all-dev
+sudo apt-get install -y curl git ccache gawk
+sudo apt-get install -y python-pip
 pip install --upgrade pip
 sudo apt-get remove python-pip
 ```
@@ -44,7 +44,7 @@ Clone the latest stable release of ArduPilot (3.5.5 on 2/28/2018):
 cd ~
 git clone https://github.com/ArduPilot/ardupilot
 cd ardupilot
-get checkout Copter-3.5.5
+git checkout Copter-3.5.5
 git submodule update --init --recursive
 ```
 Add some directories to your system's path:
