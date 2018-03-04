@@ -33,6 +33,29 @@ sudo sh -c 'echo "/usr/local/lib" >> /etc/ld.so.conf.d/local.conf'
 sudo ldconfig
 ```
 
+### Upgrade CMake
+
+Older versions of CMake may not play nicely with newer versions of Boost, so to be safe you may want to upgrade CMake. Download the source for CMake 3.10.2 with the following set of commands:
+'''
+version=3.10
+build=2
+mkdir ~/temp
+cd ~/temp
+wget https://cmake.org/files/v$version/cmake-$version.$build.tar.gz
+tar -xzvf cmake-$version.$build.tar.gz
+cd cmake-$version.$build/
+'''
+Then build CMake from source:
+'''
+./bootstrap
+make -j4
+sudo make install
+'''
+Verify that CMake was installed properly by executing the following command:
+'''
+cmake --version
+'''
+
 ### ArduPilot Installation
 
 Start by installing some Python dependencies for ArduPilot:
