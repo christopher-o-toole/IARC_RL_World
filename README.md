@@ -85,6 +85,8 @@ Compile ArduPilot
 sim_vehicle.py -w
 ```
 
+Press CTRL+C once compilation is done to stop the script.
+
 ### Gazebo Installation
 
 Install the latest stable version of Gazebo:
