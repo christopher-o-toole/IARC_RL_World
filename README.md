@@ -14,23 +14,46 @@ sudo apt-get remove python-pip
 ```
 
 #### Boost Installation
-Version 1.66 of the Boost libraries for C++ is necessary for the compilation of the ArduPilot Gazebo plugin. To start off the boost installation process, unpack the source code for Boost in your home directory:
+Version 1.65 of the Boost libraries for C++ is necessary for the compilation of the ArduPilot Gazebo plugin. To start off the boost installation process, unpack the source code for Boost in your home directory:
 ```
 cd ~
-wget https://cfhcable.dl.sourceforge.net/project/boost/boost/1.66.0/boost_1_66_0.tar.bz2
-tar -xvjf boost_1_66_0.tar.bz2
-cd ~/boost_1_66_0
+wget https://cfhcable.dl.sourceforge.net/project/boost/boost/1.65.0/boost_1_65_0.tar.bz2
+tar -xvjf boost_1_65_0.tar.bz2
+cd ~/boost_1_65_0
 ```
 Now build the Boost libraries from source:
 ```
-./bootstrap.sh --prefix=/usr/
+./bootstrap.sh --prefix=/usr/local
 ./b2 -j4
 ```
 If Boost was built succcessfully, complete the installation with the following commands:
 ```
 sudo ./b2 -j4 install
-sudo sh -c 'echo "/usr/lib" >> /etc/ld.so.conf.d/local.conf'
+sudo sh -c 'echo "/usr/local/lib" >> /etc/ld.so.conf.d/local.conf'
 sudo ldconfig
+```
+
+### Upgrade CMake
+
+Older versions of CMake may not play nicely with newer versions of Boost, so to be safe you may want to upgrade CMake. Download the source for CMake 3.10.2 with the following set of commands:
+```
+version=3.10
+build=2
+mkdir ~/temp
+cd ~/temp
+wget https://cmake.org/files/v$version/cmake-$version.$build.tar.gz
+tar -xzvf cmake-$version.$build.tar.gz
+cd cmake-$version.$build/
+```
+Then build CMake from source:
+```
+./bootstrap
+make -j4
+sudo make install
+```
+Verify that CMake was installed properly by executing the following command:
+```
+cmake --version
 ```
 
 ### ArduPilot Installation
@@ -61,6 +84,8 @@ Compile ArduPilot
 ```
 sim_vehicle.py -w
 ```
+
+Press CTRL+C once compilation is done to stop the script.
 
 ### Gazebo Installation
 
