@@ -179,6 +179,7 @@ make -j4
 ```
 Add the world's assets to your Gazebo environment:
 ```
+echo 'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:~/IARC_RL_World/Assets/models' >> ~/.bashrc
 echo 'export GAZEBO_PLUGIN_PATH=${GAZEBO_PLUGIN_PATH}:~/IARC_RL_World/WorldController/build' >> ~/.bashrc
 echo 'export GAZEBO_PLUGIN_PATH=${GAZEBO_PLUGIN_PATH}:~/IARC_RL_World/TimeManager/build' >> ~/.bashrc
 echo 'export GAZEBO_PLUGIN_PATH=${GAZEBO_PLUGIN_PATH}:~/IARC_RL_World/GameScoreManager/build' >> ~/.bashrc
